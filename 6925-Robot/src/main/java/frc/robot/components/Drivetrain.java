@@ -6,18 +6,22 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.common.PID;
 import edu.wpi.first.wpilibj.Encoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANEncoder;
 
 public class Drivetrain {
     //Encoder
-    private Encoder leftEncoder;
-    private Encoder rightEncoder;
+
     //Motors 
-    private WPI_TalonSRX _leftLeader;
-    private WPI_VictorSPX _leftFollower;
-
-    private WPI_TalonSRX _rightLeader;
-    private WPI_VictorSPX _rightFollower;
-
+    private CANSparkMax leftFront;
+    private CANEncoder leftFrontEncoder;
+    private CANSparkMax leftRear;
+    private CANEncoder leftRearEncoder;
+    private CANSparkMax rightFront;
+    private CANEncoder rightFrontEncoder;
+    private CANSparkMax rightRear;
+    private CANEncoder righRearEncoder;
     private SpeedControllerGroup left, right;
     public DifferentialDrive drive;
 
@@ -26,20 +30,20 @@ public class Drivetrain {
     private double speed = 0;
     private double rotation = 0;
 
-    public Drivetrain(WPI_TalonSRX leftLeadTalonSRX, WPI_VictorSPX leftFollowSPX, WPI_TalonSRX rightLeadSRX,
-            WPI_VictorSPX rightFollowSPX, Encoder leftEncoder, Encoder rightEncoder) {
-        this._leftLeader = leftLeadTalonSRX;
-        this._leftFollower = leftFollowSPX;
-        this.left = new SpeedControllerGroup(_leftLeader, _leftFollower);
+    public Drivetrain(CANSparkMax leftFront,CANSparkMax leftRear,CANSparkMax rightFront,  CANSparkMax rightRear) {
+        this.leftFront = leftFront;
+        this.leftFrontEncoder = this.leftFront.getEncoder();
+        this.leftRear = leftRear;
+        this.leftRearEncoder = this.leftRearEncoder.getEncoder();
+    
+        this.left = new SpeedControllerGroup(leftFront, leftRear);
 
-        this._rightLeader = rightLeadSRX;
-        this._rightFollower = rightFollowSPX;
-        this.right = new SpeedControllerGroup(_rightLeader, _rightFollower);
+        this.rightFront = rightFront;
+        this.rightFrontEncoder = this.rightFrontEncoder.getEncoder();
+        this.rightRear = rightRear;
+        this.rightRearEncoder = this.rightRearEncoder.getEncoder();
+        this.right = new SpeedControllerGroup(rigthFront, rightRear);
         this.drive = new DifferentialDrive(left, right);
-
-        this.leftEncoder = leftEncoder;
-        this.rightEncoder = rightEncoder;
-
     }
 
 

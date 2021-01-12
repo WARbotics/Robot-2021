@@ -12,12 +12,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.components.Drivetrain;
 import frc.robot.components.OI;
+import frc.robot.components.OI.DriveMode;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 
 import com.playingwithfusion.TimeOfFlight;
 import edu.wpi.first.wpilibj.Joystick;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -33,8 +37,7 @@ public class Robot extends TimedRobot {
   private OI input; 
   private AHRS navX;
   private Drivetrain drive;
-  private static final double cpr = 6; // am-3132
-  private static final double wheelDiameter = 6; // 6 inch wheel
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -46,17 +49,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
 
     //Drivetrain
-    WPI_TalonSRX leftLeader = new WPI_TalonSRX(3);  
-    WPI_VictorSPX leftFollower = new WPI_VictorSPX(5);
-    WPI_TalonSRX rightLeader = new WPI_TalonSRX(0); 
-    WPI_VictorSPX rightFollower = new WPI_VictorSPX(3);
-    Encoder leftEncoder = new Encoder(0,1,false, EncodingType.k4X);
-    Encoder rightEncoder = new Encoder(2,3, false,EncodingType.k4X);
-    leftEncoder.setDistancePerPulse(Math.PI * wheelDiameter / cpr);
-    rightEncoder.setDistancePerPulse(Math.PI * wheelDiameter / cpr);
-    leftFollower.follow(leftLeader);
-    rightFollower.follow(rightLeader);
-    drive = new Drivetrain(leftLeader, leftFollower, rightLeader, rightFollower ,leftEncoder, rightEncoder);
+    drive = new Drivetrain(new CANSparkMax(0,MotorType.kBrushless),new CANSparkMax(1,MotorType.kBrushless),new CANSparkMax(2,MotorType.kBrushless),new CANSparkMax(3,MotorType.kBrushless));
 
     // Input
     Joystick drive = new Joystick(0);
