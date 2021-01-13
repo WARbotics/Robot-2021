@@ -16,7 +16,7 @@ import frc.robot.components.OI.DriveMode;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
-
+import frc.robot.components.Limelight;
 import com.playingwithfusion.TimeOfFlight;
 import edu.wpi.first.wpilibj.Joystick;
 import com.revrobotics.CANSparkMax;
@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
   private OI input; 
   private AHRS navX;
   private Drivetrain drive;
-
+  private Limelight vision; 
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -59,6 +59,9 @@ public class Robot extends TimedRobot {
     //NavX
     navX = new AHRS(Port.kUSB);
     navX.calibrate();
+     
+    //Vision
+    vision = new Limelight();
   }
 
   /**
