@@ -6,9 +6,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Limelight{
 
-    NewtorkTable table; 
+    private NetworkTable table; 
     public Limelight(){ 
-        this.table = NetworkTableInstance.getDefault().getTable("lightlight");
+        this.table = NetworkTableInstance.getDefault().getTable("limelight");
     }
     public double getY(){
         NetworkTableEntry ty = this.table.getEntry("ty");
@@ -26,14 +26,16 @@ public class Limelight{
         return ta.getDouble(0.0);
 
     }
+
     
     public boolean hasValidTarget(){
         NetworkTableEntry tv = this.table.getEntry("tv");
-        _tv = tv.getNumber(0);
+        int _tv = (int) tv.getNumber(0);
         if(_tv == 1){
             return true; 
         }
         return false;
     }
+
 
 }
