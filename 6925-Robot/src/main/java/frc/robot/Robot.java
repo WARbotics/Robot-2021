@@ -15,11 +15,8 @@ import frc.robot.components.OI;
 import frc.robot.components.OI.DriveMode;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort.Port;
-import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import frc.robot.components.Limelight;
-import com.playingwithfusion.TimeOfFlight;
 import edu.wpi.first.wpilibj.Joystick;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.networktables.*;
@@ -53,17 +50,22 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
+    //NavX
+    navX = new AHRS(Port.kMXP);
+    navX.calibrate();
+
     //Drivetrain
-    drive = new Drivetrain(new CANSparkMax(0,MotorType.kBrushless),new CANSparkMax(1,MotorType.kBrushless),new CANSparkMax(2,MotorType.kBrushless),new CANSparkMax(3,MotorType.kBrushless));
+    drive = new Drivetrain(new CANSparkMax(1,MotorType.kBrushless),
+                          new CANSparkMax(2,MotorType.kBrushless),
+                          new CANSparkMax(3,MotorType.kBrushless),
+                          new CANSparkMax(4,MotorType.kBrushless), 
+                          navX);
 
     // Input
     Joystick drive = new Joystick(0);
     Joystick operator = new Joystick(1);
     input = new OI(drive, operator);
 
-    //NavX
-    navX = new AHRS(Port.kUSB);
-    navX.calibrate();
      
     //Vision
     vision = new Limelight();
@@ -109,6 +111,7 @@ public class Robot extends TimedRobot {
         // Put custom auto code here
         break;
       case kDefaultAuto:
+
       default:
         // Put default auto code here
         break;
@@ -134,6 +137,7 @@ public class Robot extends TimedRobot {
     
     // Driving Modes logic
     if (input.getDriveMode() == DriveMode.SPEED) {
+      drive.drive.arcadeDrive(driveY, zRotation);
       // Speed
     } else if (input.getDriveMode() == DriveMode.PRECISION) {
       // Double check that they are the right controls
@@ -162,6 +166,13 @@ public class Robot extends TimedRobot {
       // Default
       input.setDriveMode(DriveMode.DEFAULT);
     }
+    
+    drive.update();
+    SmartDashboard.putNumber("Limelight X", vision.getX());
+    SmartDashboard.putNumber("Limelight Y", vision.getY());
+    SmartDashboard.putNumber("Limelight Area", vision.getArea());
+  
+
 
 
     Update_Limelight_Tracking();
@@ -188,6 +199,7 @@ public class Robot extends TimedRobot {
       m_Drive.arcadeDrive(drive,steer);
     }
   } 
+
 
   /**
    * This function is called once when the robot is disabled.
