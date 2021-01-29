@@ -10,7 +10,18 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.common.AutoCommand;
+import frc.robot.common.TrajectoryImporter;
+import frc.robot.components.Drivetrain;
+import frc.robot.components.OI;
+import frc.robot.components.OI.DriveMode;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SerialPort.Port;
+import frc.robot.components.Limelight;
+import edu.wpi.first.wpilibj.Joystick;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.networktables.*;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -23,7 +34,12 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
+  private OI input; 
+  private AHRS navX;
+  private Drivetrain drive;
+  private Limelight vision; 
+  private AutoCommand testAuto;
+  
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -33,6 +49,33 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    //NavX
+    navX = new AHRS(Port.kMXP);
+    navX.calibrate();
+
+    //Drivetrain
+    drive = new Drivetrain(new CANSparkMax(1,MotorType.kBrushless),
+                          new CANSparkMax(2,MotorType.kBrushless),
+                          new CANSparkMax(3,MotorType.kBrushless),
+                          new CANSparkMax(4,MotorType.kBrushless), 
+                          navX);
+
+    // Input
+    Joystick driveStick = new Joystick(0);
+    Joystick operator = new Joystick(1);
+    input = new OI(driveStick, operator);
+
+     
+    //Vision
+    vision = new Limelight();
+    
+    try {
+       testAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/test.wpilib.json"), drive);
+     } catch (Exception IOException) {
+       System.out.println("Major ERROR. AUTO Files did not load");
+     }
+    
   }
 
   /**
@@ -60,6 +103,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
@@ -72,9 +116,10 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     switch (m_autoSelected) {
       case kCustomAuto:
-        // Put custom auto code here
+        this.testAuto.update();
         break;
       case kDefaultAuto:
+
       default:
         // Put default auto code here
         break;
@@ -93,7 +138,58 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    double driveY = -input.driver.getRawAxis(1);
+    double zRotation = input.driver.getRawAxis(2);
+    double rightDriveY = input.driver.getRawAxis(3);
+    SmartDashboard.putString("Drivemode", input.getDriveMode().name()); // What is the current driving mode 
+    // Driving Modes logic
+    if (input.getDriveMode() == DriveMode.SPEED) {
+      drive.drive.arcadeDrive(zRotation, driveY);
+      // Speed
+    } else if (input.getDriveMode() == DriveMode.PRECISION) {
+      // Double check that they are the right controls
+      // Precision
+      drive.drive.tankDrive(driveY * .70, -rightDriveY * .70);
+      // make turning senetive but forward about .50
+    } else {
+      // Default
+      if (input.driver.getRawButton(6)) {
+          drive.curveDrive(-driveY, zRotation, true);
+      }else {
+          drive.curveDrive(-driveY, zRotation, false);
+        }
+    }
+    
+    
+    
+    // Driving modes
+    if (input.driver.getRawButton(1)) {
+      // Set Speed Mode
+      input.setDriveMode(DriveMode.SPEED);      
+    } else if (input.driver.getRawButton(2)) {
+      // Precision
+      input.setDriveMode(DriveMode.PRECISION);
+    } else if (input.driver.getRawButton(3)) {
+      // Default
+      input.setDriveMode(DriveMode.DEFAULT);
+    }
+    
+    if(input.driver.getRawButton(4)){
+      double[] movementValue = this.vision.moveToTarget();
+      if(this.vision.hasValidTarget()){
+        this.drive.drive.arcadeDrive(movementValue[0], movementValue[1]);
+      }else{
+        this.drive.drive.arcadeDrive(0, 0);
+      }
+    }
+    
+    drive.update();
+    SmartDashboard.putNumber("Limelight X", vision.getX());
+    SmartDashboard.putNumber("Limelight Y", vision.getY());
+    SmartDashboard.putNumber("Limelight Area", vision.getArea());
+
   }
+
 
   /**
    * This function is called once when the robot is disabled.
@@ -122,4 +218,5 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
+
 }
