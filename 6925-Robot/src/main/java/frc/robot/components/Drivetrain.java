@@ -18,16 +18,6 @@ import java.lang.Math;
 
 
 public class Drivetrain {
-    //Sensor 
-    private AHRS navx;
-    //Motors 
-    private CANSparkMax leftFront;
-
-    private CANSparkMax leftRear;
-
-    private CANSparkMax rightFront;
-
-    private CANSparkMax rightRear;
 
     private SpeedControllerGroup left, right;
     public EncoderGroup leftEncoder, rightEncoder; 
