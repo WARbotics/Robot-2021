@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import frc.robot.components.EncoderGroup;
 import java.lang.Math;
 
+
 public class Drivetrain {
     //Sensor 
     private AHRS navx;
@@ -29,8 +30,9 @@ public class Drivetrain {
     private CANSparkMax rightRear;
 
     private SpeedControllerGroup left, right;
-    private EncoderGroup leftEncoder, rightEncoder; 
+    public EncoderGroup leftEncoder, rightEncoder; 
     public DifferentialDrive drive;
+
 
     private double deadBand = 0.0;
     private PID PID = new PID(0.30, 0.00, 0.01);
@@ -52,8 +54,10 @@ public class Drivetrain {
         // RIGHT FRONT
         this.rightFront = rightFront;
 
+
         // RIGHT REAR
         this.rightRear = rightRear;
+ 
         this.right = new SpeedControllerGroup(this.rightFront, this.rightRear);
 
         this.leftEncoder = new EncoderGroup(this.leftFront.getEncoder(), this.leftRear.getEncoder());
@@ -105,7 +109,7 @@ public class Drivetrain {
         return Rotation2d.fromDegrees(this.navx.getAngle());
     }
 
-    private void resetEncoders(){
+    public void resetEncoders(){
         this.rightEncoder.reset();
         this.leftEncoder.reset();
     }
@@ -114,14 +118,14 @@ public class Drivetrain {
         return odometry.getPoseMeters();
     }
 
-    private void resetOdomentry(Pose2d pose){
+    public void resetOdomentry(Pose2d pose){
         this.resetEncoders();
         odometry.resetPosition(pose, this.getRotation2d());
     }
     
 
     public double getAverageEncoderDistance() {
-        return (leftEncoder.getDistance() + rightEncoder.getDistance()) / 2.0;
+        return (leftEncoder.getDistance() + -1*(rightEncoder.getDistance())) / 2.0; 
     }
 
     public void zeroHeading() {
@@ -135,12 +139,13 @@ public class Drivetrain {
     }
     
     public void update(){
-        SmartDashboard.putNumber("Average Encoder Distance", this.getAverageEncoderDistance());
-        SmartDashboard.putNumber("Robot Heading", this.getHeading());
-        SmartDashboard.putNumber("Robot Turning Rate", this.getTurnRate());
+        SmartDashboard.putNumber("Left Velocity", this.leftEncoder.getVelocity());
+        SmartDashboard.putNumber("Right Velocity", this.rightEncoder.getVelocity());
         SmartDashboard.putNumber("Left Encoder Group Distance", this.leftEncoder.getDistance());
         SmartDashboard.putNumber("Right Encoder Group Distance", this.rightEncoder.getDistance());
         odometry.update(this.getRotation2d(), this.leftEncoder.getDistance(), this.rightEncoder.getDistance());
+        SmartDashboard.putNumber("x odometry", odometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("y odometry", odometry.getPoseMeters().getY());
         field.setRobotPose(odometry.getPoseMeters());
         SmartDashboard.putData("Field", field);
     }

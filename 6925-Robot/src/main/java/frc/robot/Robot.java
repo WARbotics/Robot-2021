@@ -10,6 +10,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.common.AutoCommand;
+import frc.robot.common.TrajectoryImporter;
 import frc.robot.components.Drivetrain;
 import frc.robot.components.OI;
 import frc.robot.components.OI.DriveMode;
@@ -36,10 +38,8 @@ public class Robot extends TimedRobot {
   private AHRS navX;
   private Drivetrain drive;
   private Limelight vision; 
+  private AutoCommand testAuto;
   
-  private boolean m_LimelightHasValidTarget = false;
-  private double m_LimelightDriveCommand = 0.0;
-  private double m_LimelightSteerCommand = 0.0;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -62,13 +62,20 @@ public class Robot extends TimedRobot {
                           navX);
 
     // Input
-    Joystick drive = new Joystick(0);
+    Joystick driveStick = new Joystick(0);
     Joystick operator = new Joystick(1);
-    input = new OI(drive, operator);
+    input = new OI(driveStick, operator);
 
      
     //Vision
     vision = new Limelight();
+    
+    try {
+       testAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/test.wpilib.json"), drive);
+     } catch (Exception IOException) {
+       System.out.println("Major ERROR. AUTO Files did not load");
+     }
+    
   }
 
   /**
@@ -96,6 +103,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
@@ -108,7 +116,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     switch (m_autoSelected) {
       case kCustomAuto:
-        // Put custom auto code here
+        this.testAuto.update();
         break;
       case kDefaultAuto:
 
@@ -134,10 +142,9 @@ public class Robot extends TimedRobot {
     double zRotation = input.driver.getRawAxis(2);
     double rightDriveY = input.driver.getRawAxis(3);
     SmartDashboard.putString("Drivemode", input.getDriveMode().name()); // What is the current driving mode 
-    
     // Driving Modes logic
     if (input.getDriveMode() == DriveMode.SPEED) {
-      drive.drive.arcadeDrive(driveY, zRotation);
+      drive.drive.arcadeDrive(zRotation, driveY);
       // Speed
     } else if (input.getDriveMode() == DriveMode.PRECISION) {
       // Double check that they are the right controls
