@@ -9,14 +9,9 @@ import edu.wpi.first.wpilibj.Encoder;
 
 public class Drivetrain {
     //Encoder
-    private Encoder leftEncoder;
-    private Encoder rightEncoder;
-    //Motors 
-    private WPI_TalonSRX _leftLeader;
-    private WPI_VictorSPX _leftFollower;
 
-    private WPI_TalonSRX _rightLeader;
-    private WPI_VictorSPX _rightFollower;
+    //Motors 
+
 
     private SpeedControllerGroup left, right;
     public DifferentialDrive drive;
