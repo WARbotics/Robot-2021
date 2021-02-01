@@ -143,7 +143,7 @@ public class Drivetrain {
         SmartDashboard.putNumber("Right Velocity", this.rightEncoder.getVelocity());
         SmartDashboard.putNumber("Left Encoder Group Distance", this.leftEncoder.getDistance());
         SmartDashboard.putNumber("Right Encoder Group Distance", this.rightEncoder.getDistance());
-        odometry.update(this.getRotation2d(), this.leftEncoder.getDistance(), this.rightEncoder.getDistance());
+        odometry.update(this.getRotation2d(), this.leftEncoder.getDistance(), -this.rightEncoder.getDistance());
         SmartDashboard.putNumber("x odometry", odometry.getPoseMeters().getX());
         SmartDashboard.putNumber("y odometry", odometry.getPoseMeters().getY());
         field.setRobotPose(odometry.getPoseMeters());

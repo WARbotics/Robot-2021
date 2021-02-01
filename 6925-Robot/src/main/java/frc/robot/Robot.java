@@ -17,6 +17,7 @@ import frc.robot.components.OI;
 import frc.robot.components.OI.DriveMode;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import frc.robot.components.Limelight;
 import edu.wpi.first.wpilibj.Joystick;
 import com.revrobotics.CANSparkMax;
@@ -107,6 +108,7 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
+    drive.resetOdomentry(new Pose2d());
   }
 
   /**
