@@ -71,10 +71,10 @@ public class AutoCommand {
             double rightSpeed = filter2.calculate((this.drive.rightEncoder.getVelocity()));
             double leftFeed = driveLeftFeedWord.calculate(leftCommand);
             double rightFeed = driveRightFeedWord.calculate(rightCommand);
-            if(leftFeed > 3.12){
+            if(leftFeed > 10){
                 leftFeed = 0;
             }
-            if(rightFeed > 3.12){
+            if(rightFeed > 10){
                 rightFeed = 0;
             }
             this.drive.tankDriveVolts(leftFeed,rightFeed);

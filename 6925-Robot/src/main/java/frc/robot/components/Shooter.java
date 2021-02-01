@@ -1,13 +1,13 @@
 import java.lang.Math;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.*;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+//import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+//import com.ctre.phoenix.motorcontrol.can.*;
+//import com.ctre.phoenix.motorcontrol.ControlMode;
+//import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 
 public class Shooter{
-    private TalonFX shooter;
-    private TalonFX conveyor;
+   // private TalonFX shooter;
+    //private TalonFX conveyor;
     
     private double shooterSpeed;
     private double kF = 0;
@@ -20,18 +20,18 @@ public class Shooter{
     private boolean isRunning = false;
 
 
-    public Shooter(TalonFX shooter, conveyor){
-        this.shooter = shooter;
-        this.conveyor = conveyor;
+    public Shooter(){
+        //this.shooter = shooter;
+       // this.conveyor = conveyor;
 
 
-        shooter.configFactoryDefault();
+       // shooter.configFactoryDefault();
        
 
-        Shooter.config_kF(0, kF, 30);
-        Shooter.config_kP(0, kP, 30);
-        Shooter.config_kI(0, kI, 30);
-        Shooter.config_kD(0, kD, 30);
+      //  Shooter.config_kF(0, kF, 30);
+      //  Shooter.config_kP(0, kP, 30);
+      //  Shooter.config_kI(0, kI, 30);
+     //   Shooter.config_kD(0, kD, 30);
 
     }
 
@@ -44,12 +44,12 @@ public class Shooter{
         return ((RPM * (2*Math.PI))*wheelRadius)/(wheelConversionFactor);
         //Convetr to correct RPM later
     }
-
+    /*
     public double[] getVelocity(){
-        double shooter = (shooter.getSelectedSensorVelocity(0)/4096)*(2*0.0762*Math.PI);
+        double shooter = (shooter.getSelectedSensorVelocity()/4096)*(2*0.0762*Math.PI);
         double[] temp = {shooter};
         return temp;
-    }
+    
 
     public void setVelocity(double velocity){
         shooter.set(ControlMode.Velocity, convertVelocity(velocity))
@@ -59,4 +59,5 @@ public class Shooter{
     public void off(){
         isRunning = falseshooter.set(ControlMode.PercentOutput, 0);
     }
+    */
 }
