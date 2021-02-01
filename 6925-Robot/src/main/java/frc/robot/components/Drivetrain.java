@@ -18,11 +18,20 @@ import java.lang.Math;
 
 
 public class Drivetrain {
+    private CANSparkMax leftFront; 
+    private CANSparkMax leftRear; 
+
+
+
+    private CANSparkMax rightFront; 
+    private CANSparkMax rightRear; 
 
     private SpeedControllerGroup left, right;
     public EncoderGroup leftEncoder, rightEncoder; 
     public DifferentialDrive drive;
 
+    private AHRS navx; 
+    
 
     private double deadBand = 0.0;
     private PID PID = new PID(0.30, 0.00, 0.01);

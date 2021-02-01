@@ -1,3 +1,5 @@
+package frc.robot.components;
+
 import java.lang.Math;
 //import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 //import com.ctre.phoenix.motorcontrol.can.*;

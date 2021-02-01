@@ -5,28 +5,32 @@ import com.revrobotics.CANSparkMax;
 
 
 public class Intake {
-    CANSparkMax Intake Motor;
+    CANSparkMax intakeMotor;
     private boolean intakeRunning = false;
 
-    public Intake(spark Motor){
-        this.IntakeMotor=Motor;
+    public Intake(CANSparkMax Motor){
+        this.intakeMotor = Motor;
     }
 
 
     public void on(){
-        this.IntakeMotor.setPower(.95);
-        intakeRunning true;
+        this.intakeMotor.set(.95);
+        intakeRunning = true;
 
     }
-}
+
     public void off(){
-        this.IntakeMotor.setPower(0);
-        intakeRunning false;
+        this.intakeMotor.set(0);
+        intakeRunning  = false;
     }
-}
+
     public void reverse(){
-        this.IntakeMotor.setPower(-1);
-        intakeRunning true;
+        this.intakeMotor.set(-1);
+        intakeRunning = true;
+    }
+
+    public boolean isRunning(){
+        return this.intakeRunning;
     }
 }
 
