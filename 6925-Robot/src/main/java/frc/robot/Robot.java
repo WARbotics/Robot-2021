@@ -14,6 +14,7 @@ import frc.robot.common.AutoCommand;
 import frc.robot.common.TrajectoryImporter;
 import frc.robot.components.Drivetrain;
 import frc.robot.components.OI;
+import frc.robot.components.ShootingTrajectory;
 import frc.robot.components.OI.DriveMode;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort.Port;
@@ -43,6 +44,7 @@ public class Robot extends TimedRobot {
   private AutoCommand barrelAuto;
   private AutoCommand bounceAuto;
   private AutoCommand turnTestAuto;
+  private ShootingTrajectory trajectory;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -76,7 +78,7 @@ public class Robot extends TimedRobot {
      
     //Vision
     vision = new Limelight();
-    
+    trajectory = new ShootingTrajectory();
     try {
        testAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/test.wpilib.json"), drive);
        salmonAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/Salmon-path.wpilib.json"),drive);
@@ -243,6 +245,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    trajectory.setRobot(.4);
+    trajectory.setShootingTheta(45.0);
+    trajectory.setXDistance(10.0);
+    trajectory.setYDistance(8.0);
+    double initVelocity = trajectory.initialVelocity();
+    System.out.println(initVelocity);
   }
 
 }

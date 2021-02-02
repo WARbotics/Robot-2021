@@ -8,7 +8,7 @@ import java.lang.Math;
 
 
 public class Shooter{
-   // private TalonFX shooter;
+    //private TalonFX shooter;
     //private TalonFX conveyor;
     
     private double shooterSpeed;

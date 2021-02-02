@@ -33,6 +33,7 @@ public class AutoCommand {
     private LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
     private LinearFilter filter2 = LinearFilter.singlePoleIIR(0.1, 0.02);
     public boolean isStarted = false;
+    
     public AutoCommand(Path trajectoryPath, Drivetrain drive) {
         this.trajectoryPath = trajectoryPath;
         try {
