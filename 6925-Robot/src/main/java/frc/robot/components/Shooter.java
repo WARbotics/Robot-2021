@@ -3,11 +3,16 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import frc.robot.components.ShootingTrajectory;
+import com.revrobotics.CANSparkMax;
+
+
+
 
 
 public class Shooter{
     private TalonFX shooter;
-    private TalonFX conveyor;
+    private CANSparkMax conveyor;
     
     private double shooterSpeed;
     private double kF = 0;
@@ -16,8 +21,16 @@ public class Shooter{
     private double kD = 0;
     private double wheelRadius;
     private double wheelConversionFactor;
+    private double threshold;
+    private double velocity;
+    private double minShooterValue = velocity-theshold;
+    private double maxShooterValue = velocity+theshold;
+    
+   
     
     private boolean isRunning = false;
+
+    private ShootingTrajectory shootingTrajectory;
 
 
     public Shooter(TalonFX shooter, conveyor){
@@ -52,8 +65,25 @@ public class Shooter{
     }
 
     public void setVelocity(double velocity){
-        shooter.set(ControlMode.Velocity, convertVelocity(velocity))
-        shooterSpeed = convertRPM(shooter.getSelectedSensorVelocity(0))
+        double velocity = shooterTrajectory.InitialVelocity();
+        shooter.set(ControlMode.Velocity, velocity);
+        shooterSpeed = convertRPM(shooter.getIntegratedSensorVelocity());
+    }
+
+   public void runShooter(){
+       this.shooter.set(InitialVelocity);
+   }
+    
+    public void runConveyor(){
+        if (shooter.getIntegratedSensorVelocity() > minShooterValue && shooter.getIntergratedSensorVelocity() < maxShooterValue){
+            this.conveyor.set(1);
+
+        }
+
+    }
+
+    public void conveyorOff{
+        this.conveyor.set(0);
     }
 
     public void off(){
