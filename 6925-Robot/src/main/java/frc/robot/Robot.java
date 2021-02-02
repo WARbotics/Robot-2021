@@ -14,6 +14,7 @@ import frc.robot.common.AutoCommand;
 import frc.robot.common.TrajectoryImporter;
 import frc.robot.components.Drivetrain;
 import frc.robot.components.OI;
+import frc.robot.components.Shooter;
 import frc.robot.components.OI.DriveMode;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort.Port;
@@ -21,6 +22,7 @@ import frc.robot.components.Limelight;
 import edu.wpi.first.wpilibj.Joystick;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.*;
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -39,6 +41,7 @@ public class Robot extends TimedRobot {
   private Drivetrain drive;
   private Limelight vision; 
   private AutoCommand testAuto;
+  private Shooter shooter;
   
   /**
    * This function is run when the robot is first started up and should be
@@ -65,6 +68,10 @@ public class Robot extends TimedRobot {
     Joystick driveStick = new Joystick(0);
     Joystick operator = new Joystick(1);
     input = new OI(driveStick, operator);
+
+    //Shooter
+    TalonFX shooterMotor = new TalonFX(5);
+    CANSparkMax conveyorMotor = new CANSparkMax(6);
 
      
     //Vision
@@ -157,6 +164,15 @@ public class Robot extends TimedRobot {
           drive.curveDrive(-driveY, zRotation, true);
       }else {
           drive.curveDrive(-driveY, zRotation, false);
+        }
+    }
+
+    //Shooter
+    if (input.driver.getRawButton(4)){
+      vision.LedOn();
+        if (vision.hasValidTarget()){
+          shooter.runShooter();
+          shooter.runConveyor();
         }
     }
     
