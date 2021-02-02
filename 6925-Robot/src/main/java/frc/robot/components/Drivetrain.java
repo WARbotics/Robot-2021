@@ -18,6 +18,7 @@ import java.lang.Math;
 
 
 public class Drivetrain {
+    
     private CANSparkMax leftFront; 
     private CANSparkMax leftRear; 
 
@@ -36,7 +37,7 @@ public class Drivetrain {
     private double deadBand = 0.0;
     private PID PID = new PID(0.30, 0.00, 0.01);
     private double speed = 0;
-    private double rotation = 0;
+    private double rotation = 0; 
     private DifferentialDriveOdometry odometry;
     private Field2d field = new Field2d();
 
@@ -71,8 +72,11 @@ public class Drivetrain {
 
 
     }
-
-
+    /**
+    * Sets the deadband for the drivetrain 
+    *
+    * @param deadBand the amount of deadband that will be appiled to the drivetrain 
+    */
     public void setDeadBand(double deadBand) {
         this.deadBand = deadBand;
     }
