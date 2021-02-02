@@ -71,6 +71,7 @@ public class Robot extends TimedRobot {
 
     //Shooter
     TalonFX shooterMotor = new TalonFX(5);
+    TalonFX shooterFollower = new TalonFX(7);
     CANSparkMax conveyorMotor = new CANSparkMax(6);
 
      

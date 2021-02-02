@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMax;
 
 public class Shooter{
     private TalonFX shooter;
+    private TalonFX shooterFollower;
     private CANSparkMax conveyor;
     
     private double shooterSpeed;
@@ -33,8 +34,10 @@ public class Shooter{
     private ShootingTrajectory shootingTrajectory;
 
 
-    public Shooter(TalonFX shooter, conveyor){
+    public Shooter(TalonFX shooter, conveyor, shooterFollower){
         this.shooter = shooter;
+        this.shooterFollower = shooterFollower;
+        shooterFollower.follow(shooter);
         this.conveyor = conveyor;
 
 
