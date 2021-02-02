@@ -2,14 +2,30 @@ package frc.robot.components;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import java.lang.Math;
+
 
 
 public class Limelight{
 
-    private NetworkTable table; 
+    private NetworkTable table;
+    private boolean LedStatus = false;
+    
+     
     public Limelight(){ 
         this.table = NetworkTableInstance.getDefault().getTable("limelight");
+        LedStatus = true;
     }
+
+    public void LedOn(){
+        NetworkTableInstance.table.getEntry("ledMode").setNumber(3);
+        LedStatus = false;
+    }
+
+    public void LedOff(){
+        NetworkTableInstance.table.getEntry("ledMode").setNumber(1);
+    }
+
     public double getY(){
         NetworkTableEntry ty = this.table.getEntry("ty");
         return ty.getDouble(0.0);
@@ -61,6 +77,23 @@ public class Limelight{
         }
 
 
+    }
+
+    public getDistance(){
+        float Kp = -0.1f;
+        float min_command = 0.05;
+        float tx = this.getX();
+        float ty = this.getY();
+        double h1; //Hight of the limelight mounted on the robot
+        double h2 = 2.49; //Hight of the goal
+        double a1; //Fixed angle of shooter on robot
+        double a2; //y anle ot target
+        
+        
+        double distance = (h2-h1)/Math.tan(a1-a2);
+        
+
+        
     }
 
 }
