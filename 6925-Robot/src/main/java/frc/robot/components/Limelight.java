@@ -46,8 +46,8 @@ public class Limelight{
     
     public boolean hasValidTarget(){
         NetworkTableEntry tv = this.table.getEntry("tv");
-        int _tv = (int) tv.getNumber(0);
-        if(_tv > 1){
+        double _tv =  tv.getDouble(0.0);
+        if(_tv >= 1.0){
             return true; 
         }
         return false;

@@ -18,11 +18,20 @@ import java.lang.Math;
 
 
 public class Drivetrain {
+    private CANSparkMax leftFront; 
+    private CANSparkMax leftRear; 
+
+
+
+    private CANSparkMax rightFront; 
+    private CANSparkMax rightRear; 
 
     private SpeedControllerGroup left, right;
     public EncoderGroup leftEncoder, rightEncoder; 
     public DifferentialDrive drive;
 
+    private AHRS navx; 
+    
 
     private double deadBand = 0.0;
     private PID PID = new PID(0.30, 0.00, 0.01);
@@ -133,7 +142,7 @@ public class Drivetrain {
         SmartDashboard.putNumber("Right Velocity", this.rightEncoder.getVelocity());
         SmartDashboard.putNumber("Left Encoder Group Distance", this.leftEncoder.getDistance());
         SmartDashboard.putNumber("Right Encoder Group Distance", this.rightEncoder.getDistance());
-        odometry.update(this.getRotation2d(), this.leftEncoder.getDistance(), this.rightEncoder.getDistance());
+        odometry.update(this.getRotation2d(), this.leftEncoder.getDistance(), -this.rightEncoder.getDistance());
         SmartDashboard.putNumber("x odometry", odometry.getPoseMeters().getX());
         SmartDashboard.putNumber("y odometry", odometry.getPoseMeters().getY());
         field.setRobotPose(odometry.getPoseMeters());

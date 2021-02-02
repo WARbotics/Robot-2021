@@ -33,6 +33,7 @@ public class AutoCommand {
     private LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
     private LinearFilter filter2 = LinearFilter.singlePoleIIR(0.1, 0.02);
     public boolean isStarted = false;
+    
     public AutoCommand(Path trajectoryPath, Drivetrain drive) {
         this.trajectoryPath = trajectoryPath;
         try {
@@ -71,10 +72,10 @@ public class AutoCommand {
             double rightSpeed = filter2.calculate((this.drive.rightEncoder.getVelocity()));
             double leftFeed = driveLeftFeedWord.calculate(leftCommand);
             double rightFeed = driveRightFeedWord.calculate(rightCommand);
-            if(leftFeed > 3.12){
+            if(leftFeed > 10){
                 leftFeed = 0;
             }
-            if(rightFeed > 3.12){
+            if(rightFeed > 10){
                 rightFeed = 0;
             }
             this.drive.tankDriveVolts(leftFeed,rightFeed);

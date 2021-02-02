@@ -15,9 +15,11 @@ import frc.robot.common.TrajectoryImporter;
 import frc.robot.components.Drivetrain;
 import frc.robot.components.OI;
 import frc.robot.components.Shooter;
+import frc.robot.components.ShootingTrajectory;
 import frc.robot.components.OI.DriveMode;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import frc.robot.components.Limelight;
 import edu.wpi.first.wpilibj.Joystick;
 import com.revrobotics.CANSparkMax;
@@ -32,8 +34,7 @@ import edu.wpi.first.networktables.*;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
+
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private OI input; 
@@ -43,14 +44,23 @@ public class Robot extends TimedRobot {
   private AutoCommand testAuto;
   private Shooter shooter;
   
+  private AutoCommand salmonAuto;
+  private AutoCommand barrelAuto;
+  private AutoCommand bounceAuto;
+  private AutoCommand turnTestAuto;
+  private ShootingTrajectory trajectory;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
+    m_chooser.setDefaultOption("Default Auto", "Default");
+    m_chooser.addOption("Test Straight Line", "Test-Straight-line");
+    m_chooser.addOption("Salmon", "Salmon");
+    m_chooser.addOption("Barrel", "Barrel");
+    m_chooser.addOption("Bounce", "Bounce");
+    m_chooser.addOption("Turn Test", "TurnTest");
     SmartDashboard.putData("Auto choices", m_chooser);
 
     //NavX
@@ -77,9 +87,13 @@ public class Robot extends TimedRobot {
      
     //Vision
     vision = new Limelight();
-    
+    trajectory = new ShootingTrajectory();
     try {
        testAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/test.wpilib.json"), drive);
+       salmonAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/Salmon-path.wpilib.json"),drive);
+       barrelAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/Barrel-path.wpilib.json"),drive);
+       bounceAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/Bounce-path.wpilib.json"),drive);
+       turnTestAuto =  new AutoCommand(TrajectoryImporter.getTrajectory("paths/turntest.wpilib.json"), drive);
      } catch (Exception IOException) {
        System.out.println("Major ERROR. AUTO Files did not load");
      }
@@ -115,6 +129,7 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
+    drive.resetOdomentry(new Pose2d());
   }
 
   /**
@@ -123,10 +138,22 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     switch (m_autoSelected) {
-      case kCustomAuto:
+      case "Test-Straight-line":
         this.testAuto.update();
         break;
-      case kDefaultAuto:
+      case "Salmon":
+        this.salmonAuto.update();
+        break;
+      case "Barrel":
+        this.barrelAuto.update();
+       break;
+      case "Bounce":
+        this.bounceAuto.update();
+        break;
+      case "TurnTest":
+        this.turnTestAuto.update();
+        break;
+      case "Default":
 
       default:
         // Put default auto code here
@@ -199,6 +226,8 @@ public class Robot extends TimedRobot {
         this.drive.drive.arcadeDrive(0, 0);
       }
     }
+
+    
     
     drive.update();
     SmartDashboard.putNumber("Limelight X", vision.getX());
@@ -234,6 +263,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+
   }
 
 }

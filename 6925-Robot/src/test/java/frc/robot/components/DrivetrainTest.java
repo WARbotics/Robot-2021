@@ -2,6 +2,9 @@ package frc.robot.components;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
+
+import com.revrobotics.CANSparkMax;
+
 import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,4 +27,5 @@ public class DrivetrainTest{
 
 
     }
+
 }

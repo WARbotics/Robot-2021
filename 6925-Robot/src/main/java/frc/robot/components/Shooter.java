@@ -1,4 +1,7 @@
+package frc.robot.components;
+
 import java.lang.Math;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -7,13 +10,11 @@ import frc.robot.components.ShootingTrajectory;
 import com.revrobotics.CANSparkMax;
 
 
-
-
-
 public class Shooter{
     private TalonFX shooter;
     private TalonFX shooterFollower;
     private CANSparkMax conveyor;
+
     
     private double shooterSpeed;
     private double kF = 0;
@@ -34,20 +35,25 @@ public class Shooter{
     private ShootingTrajectory shootingTrajectory;
 
 
-    public Shooter(TalonFX shooter, conveyor, shooterFollower){
+
+    public Shooter(TalonFX shooter,CANSparkMax conveyor,TalonFX shooterFollower, double threshold){
         this.shooter = shooter;
         this.shooterFollower = shooterFollower;
         shooterFollower.follow(shooter);
         this.conveyor = conveyor;
-
-
+        this.threshold = threshold;
+      
+        
         shooter.configFactoryDefault();
        
 
-        Shooter.config_kF(0, kF, 30);
-        Shooter.config_kP(0, kP, 30);
-        Shooter.config_kI(0, kI, 30);
-        Shooter.config_kD(0, kD, 30);
+        shooter.config_kF(0, kF, 30);
+        shooter.config_kP(0, kP, 30);
+        shooter.config_kI(0, kI, 30);
+        shooter.config_kD(0, kD, 30);
+      
+        this.shootingTrajectory = new ShootingTrajectory()
+        // Add shooting trajectory values here
 
     }
 
@@ -60,36 +66,35 @@ public class Shooter{
         return ((RPM * (2*Math.PI))*wheelRadius)/(wheelConversionFactor);
         //Convetr to correct RPM later
     }
-
+    
     public double[] getVelocity(){
-        double shooter = (shooter.getSelectedSensorVelocity(0)/4096)*(2*0.0762*Math.PI);
+        double shooter = (shooter.getSelectedSensorVelocity()/4096)*(2*0.0762*Math.PI);
         double[] temp = {shooter};
         return temp;
-    }
+    
 
     public void setVelocity(double velocity){
-        double velocity = shooterTrajectory.InitialVelocity();
         shooter.set(ControlMode.Velocity, velocity);
         shooterSpeed = convertRPM(shooter.getIntegratedSensorVelocity());
     }
 
    public void runShooter(){
-       this.shooter.set(InitialVelocity);
+       double velocity = shooterTrajectory.initialVelocity();
+       this.velocity = velocity;
+       this.shooter.set(velocity);
    }
     
     public void runConveyor(){
         if (shooter.getIntegratedSensorVelocity() > minShooterValue && shooter.getIntergratedSensorVelocity() < maxShooterValue){
             this.conveyor.set(1);
-
         }
-
     }
 
     public void conveyorOff{
         this.conveyor.set(0);
     }
 
-    public void off(){
-        isRunning = falseshooter.set(ControlMode.PercentOutput, 0);
+    public void shootOff(){
+        this.shooter.set(0);
     }
 }
