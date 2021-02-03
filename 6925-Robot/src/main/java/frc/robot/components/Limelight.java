@@ -5,6 +5,14 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import java.lang.Math;
 
 
+/** 
+ * This class focuses on vision processing for the robot limelight. First, it sets the camera modes for
+ * the limelight LED. This is also paired with a boolean statement that tells whether the LED is on or off. It has methods that use the limelight to get the tx and ty values as well as the targe area.
+ * Then, there is another method that determines whether a target is in sight.
+ * There is also a test program that is set up for the robot. It uses arcade drive to both
+ * steer towards and follow the target.
+ * Finally, there is a method that uses some set values in order to find the distance from the limelight to the target.
+ */
 
 public class Limelight{
 
@@ -13,14 +21,18 @@ public class Limelight{
     
      
     public Limelight(){ 
-        this.table = NetworkTableInstance.getDefault().getTable("limelight");
+        this.table = NetworkTableInstance.getDefault().getTable("limelight"); //Sets the limelight status
+        LedStatus = true;
+
     }
 
+    // Turns on the limelight LED
     public void LedOn(){
         this.table.getEntry("ledMode").setNumber(3);
         isLedOn = true;
     }
 
+    // Turns off he Limelight LED
     public void LedOff(){
         this.table.getEntry("ledMode").setNumber(1);
         isLedOn = false;
@@ -29,17 +41,20 @@ public class Limelight{
         return this.isLedOn;
     }
 
+    // Get's the vertical value
     public double getY(){
         NetworkTableEntry ty = this.table.getEntry("ty");
         return ty.getDouble(0.0);
     }
 
+    // Gets the horizontal value
     public double getX(){
         NetworkTableEntry tx = this.table.getEntry("tx");
         return tx.getDouble(0.0);
 
     }
 
+    // Gets the target area
     public double getArea(){
         NetworkTableEntry ta = this.table.getEntry("ta");
         return ta.getDouble(0.0);
@@ -47,6 +62,7 @@ public class Limelight{
     }
 
     
+    // Checks if there is a valid target
     public boolean hasValidTarget(){
         NetworkTableEntry tv = this.table.getEntry("tv");
         double _tv =  tv.getDouble(0.0);
@@ -56,6 +72,7 @@ public class Limelight{
         return false;
     }
 
+    // Robot steers and moves towards target at set speed
     public double[] moveToTarget(){
         final double STEER_K = 0.03;                    // how hard to turn toward the target
         final double DRIVE_K = 0.26;                    // how hard to drive fwd toward the target
@@ -83,6 +100,7 @@ public class Limelight{
     }
 
     public double getDistance(){
+      //Finds the distance from the limelight to the target area
         double Kp = -0.1;
         double min_command = 0.05;
         double tx = this.getX();

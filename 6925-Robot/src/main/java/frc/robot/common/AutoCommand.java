@@ -19,6 +19,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.components.DriveConstants;
 import frc.robot.components.Drivetrain;
 
+/**
+ * This class takes one of the test pathweaver .JSON files and turns it into a trajectory.
+ * The trajectroy is then used to update and find the commands and speeds needed for the path goal.
+ * It aslo setps up a PID system.
+ */
+
+ 
+
 public class AutoCommand {
 
     private Path trajectoryPath;
@@ -37,7 +45,7 @@ public class AutoCommand {
     public AutoCommand(Path trajectoryPath, Drivetrain drive) {
         this.trajectoryPath = trajectoryPath;
         try {
-            this.trajectory = TrajectoryUtil.fromPathweaverJson(this.trajectoryPath);
+            this.trajectory = TrajectoryUtil.fromPathweaverJson(this.trajectoryPath); 
         } catch (IOException e) {
             DriverStation.reportError("Unable to open trajectory: " + trajectoryPath, e.getStackTrace());
         }
