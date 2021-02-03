@@ -2,6 +2,10 @@ package frc.robot.components;
 
 import com.revrobotics.CANEncoder;
 
+/**
+ * This sets up the built-in CAN Encoders conversions factors. The other methods get
+ * the distance as well as the velocity using the predetermined conversion factors.
+ */
 public class EncoderGroup {
     public CANEncoder encoderLeader; 
     public CANEncoder encoderFollower;

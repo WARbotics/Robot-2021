@@ -11,6 +11,23 @@ import com.revrobotics.CANSparkMax;
 
 
 public class Shooter{
+    /**
+     * In the Shooter class, we used functions from the shooter trajectory and the limelight code to find out the
+    *correct velocity for the shooter in order to launch power cells as accurately and precisely as possible.
+    * It has three motors, two for the shooter and one for the conveyor. It sets one of the shooter motors as a follower.
+    *It then sets all of our values which included our speed, our wheel radius, our conversion factors, the threshold,
+    *the velocity, and our maximum and minimum values for our velocity. It also sets up and PID system.
+    *It then goes into converting the velocity and RPM values. It then has functions that get and set the velocity. 
+    *We then have a method that begins to run the shooter and
+    *sets the motor to the velocity it found. Once the shooter is running, the next method checks the current speed
+    *of the motor and if the speed is within the parameters, the conveyor turns on and launches the power cell.
+    *There is also a method to turn the shooter and conveyor off.
+    *
+     */
+    
+
+
+
     private TalonFX shooter;
     private TalonFX shooterFollower;
     private CANSparkMax conveyor;
@@ -44,15 +61,15 @@ public class Shooter{
         this.threshold = threshold;
       
         
-        shooter.configFactoryDefault();
+        shooter.configFactoryDefault(); //Set the config of the robot
        
 
-        shooter.config_kF(0, kF, 30);
+        shooter.config_kF(0, kF, 30); // Set the confif for the PID
         shooter.config_kP(0, kP, 30);
         shooter.config_kI(0, kI, 30);
         shooter.config_kD(0, kD, 30);
       
-        this.shootingTrajectory = new ShootingTrajectory()
+        this.shootingTrajectory = new ShootingTrajectory() //Instantiate the shooter trajectory 
         // Add shooting trajectory values here
 
     }
@@ -68,32 +85,36 @@ public class Shooter{
     }
     
     public double[] getVelocity(){
-        double shooter = (shooter.getSelectedSensorVelocity()/4096)*(2*0.0762*Math.PI);
+        double shooter = (shooter.getSelectedSensorVelocity()/4096)*(2*0.0762*Math.PI); //Finds the optimal velocity for the shooter motor
         double[] temp = {shooter};
         return temp;
     
 
     public void setVelocity(double velocity){
         shooter.set(ControlMode.Velocity, velocity);
-        shooterSpeed = convertRPM(shooter.getIntegratedSensorVelocity());
+        shooterSpeed = convertRPM(shooter.getIntegratedSensorVelocity()); //Set the shooter velocity and convert the shooter speed.
     }
 
-   public void runShooter(){
+   //Runs and sets the shooter speed to the correct velecity.
+    public void runShooter(){
        double velocity = shooterTrajectory.initialVelocity();
        this.velocity = velocity;
        this.shooter.set(velocity);
    }
     
-    public void runConveyor(){
+   //Runs the conveyor when shooter is at the correct speed. 
+   public void runConveyor(){
         if (shooter.getIntegratedSensorVelocity() > minShooterValue && shooter.getIntergratedSensorVelocity() < maxShooterValue){
             this.conveyor.set(1);
         }
     }
 
+    //Turns off teh conveyor
     public void conveyorOff{
         this.conveyor.set(0);
     }
 
+    //Turns off the shooter
     public void shootOff(){
         this.shooter.set(0);
     }
