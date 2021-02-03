@@ -13,7 +13,7 @@ import com.revrobotics.CANSparkMax;
 
 public class Intake {
 
-    private CANSparkMax Motor;
+    private CANSparkMax intakeMotor;
     private Boolean intakeRunning = false;
 /*
 *This states that the Intake motor is a CANSparkMax motor

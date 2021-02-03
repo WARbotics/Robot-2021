@@ -9,21 +9,24 @@ import java.lang.Math;
 public class Limelight{
 
     private NetworkTable table;
-    private boolean LedStatus = false;
+    private boolean isLedOn = false;
     
      
     public Limelight(){ 
         this.table = NetworkTableInstance.getDefault().getTable("limelight");
-        LedStatus = true;
     }
 
     public void LedOn(){
-        NetworkTableInstance.table.getEntry("ledMode").setNumber(3);
-        LedStatus = false;
+        this.table.getEntry("ledMode").setNumber(3);
+        isLedOn = true;
     }
 
     public void LedOff(){
-        NetworkTableInstance.table.getEntry("ledMode").setNumber(1);
+        this.table.getEntry("ledMode").setNumber(1);
+        isLedOn = false;
+    }
+    public boolean getLedStatus(){
+        return this.isLedOn;
     }
 
     public double getY(){
@@ -79,20 +82,20 @@ public class Limelight{
 
     }
 
-    public getDistance(){
-        float Kp = -0.1f;
-        float min_command = 0.05;
-        float tx = this.getX();
-        float ty = this.getY();
-        double h1; //Hight of the limelight mounted on the robot
+    public double getDistance(){
+        double Kp = -0.1;
+        double min_command = 0.05;
+        double tx = this.getX();
+        double ty = this.getY();
+        double h1 = 0.0; //Hight of the limelight mounted on the robot (CHANGE LATER)
         double h2 = 2.49; //Hight of the goal
-        double a1; //Fixed angle of shooter on robot
-        double a2; //y anle ot target
+        double a1 = 0.0; //Fixed angle of shooter on robot (CHANGE LATER)
+        double a2 = 0.0; //y anle ot target (CHANGE LATER)
         
         
         double distance = (h2-h1)/Math.tan(a1-a2);
         
-
+        return distance;
         
     }
 

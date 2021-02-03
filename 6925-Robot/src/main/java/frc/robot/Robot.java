@@ -24,6 +24,7 @@ import frc.robot.components.Limelight;
 import edu.wpi.first.wpilibj.Joystick;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.*;
 /**
@@ -82,9 +83,9 @@ public class Robot extends TimedRobot {
     //Shooter
     TalonFX shooterMotor = new TalonFX(5);
     TalonFX shooterFollower = new TalonFX(7);
-    CANSparkMax conveyorMotor = new CANSparkMax(6);
+    CANSparkMax conveyorMotor = new CANSparkMax(6, null);
 
-     
+    this.shooter = new Shooter(shooterMotor,  conveyorMotor, shooterFollower, 5);
     //Vision
     vision = new Limelight();
     trajectory = new ShootingTrajectory();
@@ -202,7 +203,7 @@ public class Robot extends TimedRobot {
     /*
     *When we press button 4 the limelight will turn on and if the limelight spots the target it runs the conveyor and shooter.
     */
-    if (input.driver.getRawButton(4)){
+    if (input.operator.getRawButton(1)){
       vision.LedOn();
         if (vision.hasValidTarget()){
           shooter.runShooter();
