@@ -33,7 +33,7 @@ public class AutoCommand {
     private LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
     private LinearFilter filter2 = LinearFilter.singlePoleIIR(0.1, 0.02);
     public boolean isStarted = false;
-    
+
     public AutoCommand(Path trajectoryPath, Drivetrain drive) {
         this.trajectoryPath = trajectoryPath;
         try {
@@ -78,10 +78,8 @@ public class AutoCommand {
             if(rightFeed > 10){
                 rightFeed = 0;
             }
+            
             this.drive.tankDriveVolts(leftFeed,rightFeed);
-            // CURRENT issue is that the robot is not moving the distance that we set it to
-            // we have checked to see if the distance of the enocder is correct which it is 
-            // it could be the average distance traveled which is the distance 
             SmartDashboard.putNumber("Left Feed", leftFeed);
             SmartDashboard.putNumber("right Feed", rightFeed);
             SmartDashboard.putNumber("left Command", leftCommand);

@@ -8,7 +8,7 @@ import com.revrobotics.CANSparkMax;
 
 public class Intake {
 
-    private CANSparkMax Motor;
+    private CANSparkMax intakeMotor;
     private Boolean intakeRunning = false;
 
 
