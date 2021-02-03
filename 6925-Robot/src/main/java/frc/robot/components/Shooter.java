@@ -42,8 +42,8 @@ public class Shooter{
     private double wheelConversionFactor;
     private double threshold;
     private double velocity;
-    private double minShooterValue = velocity-theshold;
-    private double maxShooterValue = velocity+theshold;
+    private double minShooterValue = velocity-threshold;
+    private double maxShooterValue = velocity+threshold;
     
    
     
@@ -70,6 +70,7 @@ public class Shooter{
         shooter.config_kD(0, kD, 30);
       
         this.shootingTrajectory = new ShootingTrajectory() //Instantiate the shooter trajectory 
+
         // Add shooting trajectory values here
 
     }
@@ -88,34 +89,33 @@ public class Shooter{
         double shooter = (shooter.getSelectedSensorVelocity()/4096)*(2*0.0762*Math.PI); //Finds the optimal velocity for the shooter motor
         double[] temp = {shooter};
         return temp;
-    
-
-    public void setVelocity(double velocity){
-        shooter.set(ControlMode.Velocity, velocity);
-        shooterSpeed = convertRPM(shooter.getIntegratedSensorVelocity()); //Set the shooter velocity and convert the shooter speed.
     }
 
-   //Runs and sets the shooter speed to the correct velecity.
-    public void runShooter(){
-       double velocity = shooterTrajectory.initialVelocity();
-       this.velocity = velocity;
-       this.shooter.set(velocity);
-   }
-    
-   //Runs the conveyor when shooter is at the correct speed. 
-   public void runConveyor(){
-        if (shooter.getIntegratedSensorVelocity() > minShooterValue && shooter.getIntergratedSensorVelocity() < maxShooterValue){
+    public void setVelocity(double velocity){
+        shooter.set(ControlMode.Velocity, velocity);       
+    }
+
+    public void runShooter() {
+        double velocity = shootingTrajectory.initialVelocity();
+        this.velocity = velocity;
+        this.shooter.set(ControlMode.Velocity, velocity);
+    }
+
+    public void runConveyor() {
+        if (shooter.getSelectedSensorVelocity() > minShooterValue
+                && shooter.getSelectedSensorVelocity() < maxShooterValue) {
             this.conveyor.set(1);
         }
     }
 
-    //Turns off teh conveyor
-    public void conveyorOff{
+
+    //Turns off the conveyor
+    public void conveyorOff(){
         this.conveyor.set(0);
     }
 
     //Turns off the shooter
     public void shootOff(){
-        this.shooter.set(0);
+        this.shooter.set(ControlMode.PercentOutput, 0);
     }
 }
