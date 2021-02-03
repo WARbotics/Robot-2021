@@ -17,6 +17,11 @@ import frc.robot.components.EncoderGroup;
 import java.lang.Math;
 
 
+/*
+*The Drivetrain controlls the motors on the left and on the right. 
+*It also gives use values so we are able to make fully functioning autonmaus.
+*/
+
 public class Drivetrain {
     
     private CANSparkMax leftFront; 
@@ -41,6 +46,10 @@ public class Drivetrain {
     private DifferentialDriveOdometry odometry;
     private Field2d field = new Field2d();
 
+/*
+*This instantuates the leftFront and other motors as CANSparkMax
+*/
+
     public Drivetrain(CANSparkMax leftFront,CANSparkMax leftRear,CANSparkMax rightFront,  CANSparkMax rightRear,AHRS navX) {
         
         // LEFT FRONT
@@ -59,7 +68,9 @@ public class Drivetrain {
         this.rightRear = rightRear;
  
         this.right = new SpeedControllerGroup(this.rightFront, this.rightRear);
-
+/*
+*This groups each side encoder together
+*/
         this.leftEncoder = new EncoderGroup(this.leftFront.getEncoder(), this.leftRear.getEncoder());
         this.rightEncoder = new EncoderGroup(this.rightFront.getEncoder(), this.rightRear.getEncoder());
         this.drive = new DifferentialDrive(left, right);
@@ -80,15 +91,22 @@ public class Drivetrain {
     public void setDeadBand(double deadBand) {
         this.deadBand = deadBand;
     }
-
+    /**
+    * Gets the speed for the drivetrain 
+    *
+    */
     public double getSpeed() {
         return speed;
     }
-
+/*
+*gets the rotation for the drivetrain
+*/
     public double getRotation() {
         return rotation;
     }
-
+/*
+*drives the robot in a curve
+*/
     public void curveDrive(double speed, double rotation, boolean isQuickTurn) {
         if (Math.abs(speed) <= this.deadBand) {
             speed = 0;
@@ -101,13 +119,17 @@ public class Drivetrain {
         PID.setActual(this.speed);
         drive.curvatureDrive(this.speed, this.rotation, isQuickTurn);
     }
-
+/*
+*runs tank drive via volatge
+*/
     public void tankDriveVolts(double leftVolts, double rightVolts) {
         left.setVoltage(leftVolts);
         right.setVoltage(-rightVolts);
         drive.feed();
       }
-
+/* 
+*gets rotation
+*/
     private Rotation2d getRotation2d(){
         return Rotation2d.fromDegrees(this.navx.getAngle());
     }
@@ -116,7 +138,9 @@ public class Drivetrain {
         this.rightEncoder.reset();
         this.leftEncoder.reset();
     }
-    
+   /*
+   *gets the position
+   */ 
     public Pose2d getPose() {
         return odometry.getPoseMeters();
     }
@@ -125,12 +149,16 @@ public class Drivetrain {
         this.resetEncoders();
         odometry.resetPosition(pose, this.getRotation2d());
     }
-    
+/*
+*this gets average encoder distance
+*/     
 
     public double getAverageEncoderDistance() {
         return (leftEncoder.getDistance() + -1*(rightEncoder.getDistance())) / 2.0; 
     }
-
+/*
+*Sensor
+*/
     public void zeroHeading() {
         this.navx.reset();
     }
@@ -140,7 +168,9 @@ public class Drivetrain {
     public double getTurnRate() {
         return -(this.navx.getRate());
     }
-    
+/*
+* this directly tells us the values SmartDashboard
+*/
     public void update(){
         SmartDashboard.putNumber("Left Velocity", this.leftEncoder.getVelocity());
         SmartDashboard.putNumber("Right Velocity", this.rightEncoder.getVelocity());

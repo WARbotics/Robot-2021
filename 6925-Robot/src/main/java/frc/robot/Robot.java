@@ -189,6 +189,9 @@ public class Robot extends TimedRobot {
       // make turning senetive but forward about .50
     } else {
       // Default
+      /*
+      *When we press button 6 we drive in curve drive.
+      */
       if (input.driver.getRawButton(6)) {
           drive.curveDrive(-driveY, zRotation, true);
       }else {
@@ -197,6 +200,9 @@ public class Robot extends TimedRobot {
     }
 
     //Shooter
+    /*
+    *When we press button 4 the limelight will turn on and if the limelight spots the target it runs the conveyor and shooter.
+    */
     if (input.operator.getRawButton(1)){
       vision.LedOn();
         if (vision.hasValidTarget()){
@@ -210,15 +216,26 @@ public class Robot extends TimedRobot {
     // Driving modes
     if (input.driver.getRawButton(1)) {
       // Set Speed Mode
+      /*
+      *when we press button 1 the robot goes into speed mood
+      */
       input.setDriveMode(DriveMode.SPEED);      
     } else if (input.driver.getRawButton(2)) {
       // Precision
+      /*
+      *when we press button 2 the robot goes into precision mode.
+      */
       input.setDriveMode(DriveMode.PRECISION);
     } else if (input.driver.getRawButton(3)) {
       // Default
+      /*
+      *when we press button 3 the robot goes into a defulat drive mode.
+      */
       input.setDriveMode(DriveMode.DEFAULT);
     }
-    
+    /*
+    *When we press button 4 the robot goes to zero, zero on the limelight.
+    */
     if(input.driver.getRawButton(4)){
       double[] movementValue = this.vision.moveToTarget();
       if(this.vision.hasValidTarget()){
@@ -229,7 +246,9 @@ public class Robot extends TimedRobot {
     }
 
     
-    
+    /*
+    *This tells the smart dashboard the limelight X, Y, and area values are
+    */
     drive.update();
     SmartDashboard.putNumber("Limelight X", vision.getX());
     SmartDashboard.putNumber("Limelight Y", vision.getY());

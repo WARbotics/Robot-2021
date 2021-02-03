@@ -2,6 +2,9 @@ package frc.robot.components;
 
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
+/*
+*these are the drive constants
+*/
 public class DriveConstants {
 
 
