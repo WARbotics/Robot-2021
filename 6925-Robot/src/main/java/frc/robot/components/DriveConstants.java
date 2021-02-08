@@ -32,4 +32,8 @@ public class DriveConstants {
     public static final double kRamseteZeta = 0.7;
 
 
+    // Robot 
+    public static final double robotShooterHeight = 0.0;
+    public static final double robotShooterAngle = 0.0;
+
 }

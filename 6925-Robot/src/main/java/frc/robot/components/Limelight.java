@@ -22,7 +22,6 @@ public class Limelight{
      
     public Limelight(){ 
         this.table = NetworkTableInstance.getDefault().getTable("limelight"); //Sets the limelight status
-        LedStatus = true;
 
     }
 
@@ -101,15 +100,10 @@ public class Limelight{
 
     public double getDistance(){
       //Finds the distance from the limelight to the target area
-        double Kp = -0.1;
-        double min_command = 0.05;
-        double tx = this.getX();
-        double ty = this.getY();
-        double h1 = 0.0; //Hight of the limelight mounted on the robot (CHANGE LATER)
+        double h1 = DriveConstants.robotShooterHeight; //Hight of the limelight mounted on the robot (CHANGE LATER)
         double h2 = 2.49; //Hight of the goal
-        double a1 = 0.0; //Fixed angle of shooter on robot (CHANGE LATER)
-        double a2 = 0.0; //y anle ot target (CHANGE LATER)
-        
+        double a1 = DriveConstants.robotShooterAngle; //Fixed angle of shooter on robot (CHANGE LATER)
+        double a2 = this.getY(); //y anle ot target (CHANGE LATER)
         
         double distance = (h2-h1)/Math.tan(a1-a2);
         

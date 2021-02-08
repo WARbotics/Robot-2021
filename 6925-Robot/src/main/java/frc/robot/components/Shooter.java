@@ -69,7 +69,7 @@ public class Shooter{
         shooter.config_kI(0, kI, 30);
         shooter.config_kD(0, kD, 30);
       
-        this.shootingTrajectory = new ShootingTrajectory() //Instantiate the shooter trajectory 
+        this.shootingTrajectory = new ShootingTrajectory(); //Instantiate the shooter trajectory 
 
         // Add shooting trajectory values here
 
@@ -86,8 +86,9 @@ public class Shooter{
     }
     
     public double[] getVelocity(){
-        double shooter = (shooter.getSelectedSensorVelocity()/4096)*(2*0.0762*Math.PI); //Finds the optimal velocity for the shooter motor
-        double[] temp = {shooter};
+        double shooterSpeedMain = (double)(shooter.getSelectedSensorVelocity()/4096)*(2*0.0762*Math.PI); //Finds the optimal velocity for the shooter motor
+        double shooterSpeedFollower = (double)(shooterFollower.getSelectedSensorVelocity()/4096)*(2*0.0762*Math.PI);
+        double[] temp = {shooterSpeedMain,shooterSpeedFollower};
         return temp;
     }
 

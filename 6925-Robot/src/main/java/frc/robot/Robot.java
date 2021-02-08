@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.*;
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -205,10 +204,12 @@ public class Robot extends TimedRobot {
     */
     if (input.operator.getRawButton(1)){
       vision.LedOn();
-        if (vision.hasValidTarget()){
+      if (vision.hasValidTarget()){
           shooter.runShooter();
           shooter.runConveyor();
-        }
+      }
+    }else{
+      vision.LedOff();
     }
     
     
