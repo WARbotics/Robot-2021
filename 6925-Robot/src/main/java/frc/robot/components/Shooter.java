@@ -9,6 +9,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import frc.robot.components.ShootingTrajectory;
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 public class Shooter{
     /**
@@ -28,22 +30,22 @@ public class Shooter{
 
 
 
-    private TalonFX shooter;
-    private TalonFX shooterFollower;
+    public TalonFX shooter;
+    public TalonFX shooterFollower;
     private CANSparkMax conveyor;
 
     
     private double shooterSpeed;
     private double kF = 0;
     private double kP = .25;
-    private double kI = 0;
-    private double kD = 0;
+    private double kI = 0.001;
+    private double kD = 0.05;
     private double wheelRadius;
     private double wheelConversionFactor;
     private double threshold;
-    private double velocity;
-    private double minShooterValue = velocity-threshold;
-    private double maxShooterValue = velocity+threshold;
+    private double velocityOfShooter;
+    private double minShooterValue = velocityOfShooter-threshold;
+    private double maxShooterValue = velocityOfShooter+threshold;
     
    
     
@@ -56,7 +58,8 @@ public class Shooter{
     public Shooter(TalonFX shooter,CANSparkMax conveyor,TalonFX shooterFollower, double threshold){
         this.shooter = shooter;
         this.shooterFollower = shooterFollower;
-        shooterFollower.follow(shooter);
+        this.shooterFollower.follow(shooter);
+        this.shooter.setInverted(true);
         this.conveyor = conveyor;
         this.threshold = threshold;
       
@@ -70,7 +73,9 @@ public class Shooter{
         shooter.config_kD(0, kD, 30);
       
         this.shootingTrajectory = new ShootingTrajectory(); //Instantiate the shooter trajectory 
-
+        this.shootingTrajectory.setRobot(DriveConstants.robotShooterHeight);
+        this.shootingTrajectory.setShootingTheta(DriveConstants.robotShooterAngle);
+        this.shootingTrajectory.setYDistance(1.90); // Change this to shooting board height
         // Add shooting trajectory values here
 
     }
@@ -86,8 +91,8 @@ public class Shooter{
     }
     
     public double[] getVelocity(){
-        double shooterSpeedMain = (double)(shooter.getSelectedSensorVelocity()/4096)*(2*0.0762*Math.PI); //Finds the optimal velocity for the shooter motor
-        double shooterSpeedFollower = (double)(shooterFollower.getSelectedSensorVelocity()/4096)*(2*0.0762*Math.PI);
+        double shooterSpeedMain = (double)(shooter.getSelectedSensorVelocity()/3057)*(2*.1016*Math.PI); //Finds the optimal velocity for the shooter motor
+        double shooterSpeedFollower = (double)(shooterFollower.getSelectedSensorVelocity()/3057)*(2*.1016*Math.PI);
         double[] temp = {shooterSpeedMain,shooterSpeedFollower};
         return temp;
     }
@@ -96,16 +101,22 @@ public class Shooter{
         shooter.set(ControlMode.Velocity, velocity);       
     }
 
-    public void runShooter() {
+    public void runShooter(double distance) {
+        shootingTrajectory.setXDistance(distance);
         double velocity = shootingTrajectory.initialVelocity();
-        this.velocity = velocity;
+        SmartDashboard.putNumber("Init Velocity goal", velocity);
+    
+        this.velocityOfShooter = velocity;
         this.shooter.set(ControlMode.Velocity, velocity);
     }
 
     public void runConveyor() {
-        if (shooter.getSelectedSensorVelocity() > minShooterValue
-                && shooter.getSelectedSensorVelocity() < maxShooterValue) {
-            this.conveyor.set(1);
+        
+        if (getVelocity()[0] > minShooterValue
+            && getVelocity()[0] < maxShooterValue) {
+            this.conveyor.set(.65);
+        }else{
+            this.conveyor.set(0);
         }
     }
 

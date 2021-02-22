@@ -28,7 +28,7 @@ public class Drivetrain {
     private CANSparkMax leftRear; 
 
 
-
+    
     private CANSparkMax rightFront; 
     private CANSparkMax rightRear; 
 
@@ -79,6 +79,8 @@ public class Drivetrain {
 
         //Sensor 
         this.navx = navX; 
+        this.navx.setAngleAdjustment(0);
+        
         this.odometry = new DifferentialDriveOdometry(this.getRotation2d()); // Get the current angle and converts to rads 
 
 
@@ -131,7 +133,7 @@ public class Drivetrain {
 *gets rotation
 */
     private Rotation2d getRotation2d(){
-        return Rotation2d.fromDegrees(this.navx.getAngle());
+        return this.navx.getRotation2d();
     }
 
     public void resetEncoders(){
@@ -156,6 +158,11 @@ public class Drivetrain {
     public double getAverageEncoderDistance() {
         return (leftEncoder.getDistance() + -1*(rightEncoder.getDistance())) / 2.0; 
     }
+    public void tankDriveCustom(double leftSpeed, double rightSpeed){
+        left.set(leftSpeed);
+        right.set(-rightSpeed);
+        drive.feed();
+    }
 /*
 *Sensor
 */
@@ -163,7 +170,7 @@ public class Drivetrain {
         this.navx.reset();
     }
     public double getHeading(){
-        return this.navx.getRoll();
+        return this.getRotation2d().getDegrees();
     }
     public double getTurnRate() {
         return -(this.navx.getRate());
@@ -172,6 +179,7 @@ public class Drivetrain {
 * this directly tells us the values SmartDashboard
 */
     public void update(){
+        SmartDashboard.putNumber("Heading", this.getHeading());
         SmartDashboard.putNumber("Left Velocity", this.leftEncoder.getVelocity());
         SmartDashboard.putNumber("Right Velocity", this.rightEncoder.getVelocity());
         SmartDashboard.putNumber("Left Encoder Group Distance", this.leftEncoder.getDistance());

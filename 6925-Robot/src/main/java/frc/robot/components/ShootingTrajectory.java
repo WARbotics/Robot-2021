@@ -30,7 +30,7 @@ public class ShootingTrajectory {
 
     public double initialVelocity() {
         double shootingAngleRadians = Math.toRadians(shootingAngleDegrees);
-        double numerator = -1* gravity * Math.pow(xDistance, 2.0);
+        double numerator =  gravity * Math.pow(xDistance, 2.0);
         double denominator = (2 * Math.pow(Math.cos(shootingAngleRadians), 2.0) * (yDistance - robotHeight - Math.tan(shootingAngleRadians) * xDistance));
         double initVelocity = Math.sqrt( numerator/ denominator);
         return initVelocity;

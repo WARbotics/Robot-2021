@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.common.AutoCommand;
 import frc.robot.common.TrajectoryImporter;
+import frc.robot.components.DriveConstants;
 import frc.robot.components.Drivetrain;
 import frc.robot.components.OI;
 import frc.robot.components.Shooter;
@@ -22,10 +23,15 @@ import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import frc.robot.components.Limelight;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Spark;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.networktables.*;
+import frc.robot.components.Intake;
+import frc.robot.common.LED;
+import frc.robot.common.LED.LEDMode;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -43,12 +49,13 @@ public class Robot extends TimedRobot {
   private Limelight vision; 
   private AutoCommand testAuto;
   private Shooter shooter;
-  
+  private Intake intake;
   private AutoCommand salmonAuto;
   private AutoCommand barrelAuto;
   private AutoCommand bounceAuto;
   private AutoCommand turnTestAuto;
   private ShootingTrajectory trajectory;
+  private LED led;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -80,18 +87,24 @@ public class Robot extends TimedRobot {
     input = new OI(driveStick, operator);
 
     //Shooter
-    TalonFX shooterMotor = new TalonFX(5);
-    TalonFX shooterFollower = new TalonFX(7);
-    CANSparkMax conveyorMotor = new CANSparkMax(6, null);
+    TalonFX shooterMotor = new TalonFX(7);
+    TalonFX shooterFollower = new TalonFX(8);
+    CANSparkMax conveyorMotor = new CANSparkMax(6, MotorType.kBrushless);
 
     this.shooter = new Shooter(shooterMotor,  conveyorMotor, shooterFollower, 5);
+
+    //Intake 
+    this.intake = new Intake(new CANSparkMax(5, MotorType.kBrushless)); 
+    
+    //LED 
+    this.led = new LED(new Spark(0));
     //Vision
     vision = new Limelight();
-    trajectory = new ShootingTrajectory();
+
     try {
        testAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/test.wpilib.json"), drive);
        salmonAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/Salmon-path.wpilib.json"),drive);
-       barrelAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/Barrel-path.wpilib.json"),drive);
+       barrelAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/Barrel-racing-path.wpilib.json"),drive);
        bounceAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/Bounce-path.wpilib.json"),drive);
        turnTestAuto =  new AutoCommand(TrajectoryImporter.getTrajectory("paths/turntest.wpilib.json"), drive);
      } catch (Exception IOException) {
@@ -110,6 +123,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    this.led.setLEDMode(LEDMode.STARTUP);
   }
 
   /**
@@ -159,6 +173,7 @@ public class Robot extends TimedRobot {
         // Put default auto code here
         break;
     }
+    this.led.setLEDMode(LEDMode.IDLE);
   }
 
   /**
@@ -179,7 +194,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putString("Drivemode", input.getDriveMode().name()); // What is the current driving mode 
     // Driving Modes logic
     if (input.getDriveMode() == DriveMode.SPEED) {
-      drive.drive.arcadeDrive(zRotation, driveY);
+      drive.drive.arcadeDrive(driveY, zRotation);
       // Speed
     } else if (input.getDriveMode() == DriveMode.PRECISION) {
       // Double check that they are the right controls
@@ -187,15 +202,7 @@ public class Robot extends TimedRobot {
       drive.drive.tankDrive(driveY * .70, -rightDriveY * .70);
       // make turning senetive but forward about .50
     } else {
-      // Default
-      /*
-      *When we press button 6 we drive in curve drive.
-      */
-      if (input.driver.getRawButton(6)) {
-          drive.curveDrive(-driveY, zRotation, true);
-      }else {
-          drive.curveDrive(-driveY, zRotation, false);
-        }
+      drive.drive.arcadeDrive(driveY, zRotation*.85);
     }
 
     //Shooter
@@ -204,13 +211,37 @@ public class Robot extends TimedRobot {
     */
     if (input.operator.getRawButton(1)){
       vision.LedOn();
-      if (vision.hasValidTarget()){
-          shooter.runShooter();
-          shooter.runConveyor();
-      }
+      
+      shooter.runShooter(vision.getDistance());
+      shooter.runConveyor();
+      this.led.setLEDMode(LEDMode.SHOOTING);
+      SmartDashboard.putNumber("LimeLight_distance", vision.getDistance());
     }else{
       vision.LedOff();
+      shooter.shootOff();
+      shooter.conveyorOff();
     }
+
+    if(input.driver.getRawButton(8)){
+      this.intake.on();
+    }else if(input.driver.getRawButton(7)){
+      this.intake.reverse();
+    }else{
+      this.intake.off();
+    }
+    /*
+    if(input.operator.getRawButton(3)){
+      this.shooter.runShooter();
+    }else{
+      this.shooter.shootOff();
+    }
+    */
+    if(input.operator.getRawButton(2)){
+      this.shooter.runConveyor();
+    }else{
+      this.shooter.conveyorOff();
+    }
+
     
     
     
@@ -251,9 +282,11 @@ public class Robot extends TimedRobot {
     *This tells the smart dashboard the limelight X, Y, and area values are
     */
     drive.update();
+    SmartDashboard.putNumber("Shooter rotates main", this.shooter.getVelocity()[0]);
     SmartDashboard.putNumber("Limelight X", vision.getX());
     SmartDashboard.putNumber("Limelight Y", vision.getY());
     SmartDashboard.putNumber("Limelight Area", vision.getArea());
+    this.led.setLEDMode(LEDMode.IDLE);
 
   }
 

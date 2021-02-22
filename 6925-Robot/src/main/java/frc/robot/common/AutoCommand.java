@@ -72,6 +72,7 @@ public class AutoCommand {
         if(isStarted){
             
             Trajectory.State goal = trajectory.sample(timer.get());
+            
             ChassisSpeeds adjustedSpeeds = controller.calculate(this.drive.getPose(), goal);
             DifferentialDriveWheelSpeeds wheelSpeeds = DriveConstants.kDriveKinematics.toWheelSpeeds(adjustedSpeeds);
             double leftCommand = wheelSpeeds.leftMetersPerSecond;
@@ -86,12 +87,13 @@ public class AutoCommand {
             if(rightFeed > 10){
                 rightFeed = 0;
             }
-            
-            this.drive.tankDriveVolts(leftFeed,rightFeed);
+           
+            this.drive.tankDriveVolts((leftFeed+leftPID.calculate(leftSpeed, leftCommand)),(rightFeed+rightPID.calculate(rightSpeed, rightCommand)));
             SmartDashboard.putNumber("Left Feed", leftFeed);
             SmartDashboard.putNumber("right Feed", rightFeed);
             SmartDashboard.putNumber("left Command", leftCommand);
             SmartDashboard.putNumber("right command", rightCommand);
+            SmartDashboard.putNumber("leftPID Speed", leftSpeed);
             drive.update();
         }else{
             start();
