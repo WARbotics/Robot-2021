@@ -102,11 +102,11 @@ public class Robot extends TimedRobot {
     vision = new Limelight();
 
     try {
-       testAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/test.wpilib.json"), drive);
-       salmonAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/Salmon-path.wpilib.json"),drive);
-       barrelAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/Barrel-racing-path.wpilib.json"),drive);
-       bounceAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/Bounce-path.wpilib.json"),drive);
-       turnTestAuto =  new AutoCommand(TrajectoryImporter.getTrajectory("paths/turntest.wpilib.json"), drive);
+       testAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/output/test.wpilib.json"), drive);
+       salmonAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/output/Salmon-path.wpilib.json"),drive);
+       barrelAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/output/Barrel-racing-path.wpilib.json"),drive);
+       bounceAuto = new AutoCommand(TrajectoryImporter.getTrajectory("paths/output/Bounce-path.wpilib.json"),drive);
+       turnTestAuto =  new AutoCommand(TrajectoryImporter.getTrajectory("paths/output/turntest.wpilib.json"), drive);
      } catch (Exception IOException) {
        System.out.println("Major ERROR. AUTO Files did not load");
      }
@@ -202,7 +202,7 @@ public class Robot extends TimedRobot {
       drive.drive.tankDrive(driveY * .70, -rightDriveY * .70);
       // make turning senetive but forward about .50
     } else {
-      drive.drive.arcadeDrive(driveY, zRotation*.85);
+      drive.drive.arcadeDrive(driveY*.70, zRotation*.70);
     }
 
     //Shooter
@@ -213,10 +213,10 @@ public class Robot extends TimedRobot {
       vision.LedOn();
       
       shooter.runShooter(vision.getDistance());
-      shooter.runConveyor();
       this.led.setLEDMode(LEDMode.SHOOTING);
       SmartDashboard.putNumber("LimeLight_distance", vision.getDistance());
     }else{
+
       vision.LedOff();
       shooter.shootOff();
       shooter.conveyorOff();
@@ -236,12 +236,13 @@ public class Robot extends TimedRobot {
       this.shooter.shootOff();
     }
     */
+
     if(input.operator.getRawButton(2)){
       this.shooter.runConveyor();
     }else{
       this.shooter.conveyorOff();
     }
-
+  
     
     
     

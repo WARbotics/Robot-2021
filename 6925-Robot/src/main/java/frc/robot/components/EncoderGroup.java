@@ -25,7 +25,7 @@ public class EncoderGroup {
         return ((this.encoderFollower.getPosition() + this.encoderLeader.getPosition()) / this.conversionFactor)*0.478779;
     } 
     public double getVelocity(){
-        return ((this.encoderLeader.getVelocity()+this.encoderFollower.getVelocity())/4096) * (1/12.7) * 0.478779;
+        return ((this.encoderLeader.getVelocity()+this.encoderFollower.getVelocity())/4096) * (1/10.75) * 0.478779;
     }
     
     public void reset(){

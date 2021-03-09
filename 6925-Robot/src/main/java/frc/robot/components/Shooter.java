@@ -105,19 +105,23 @@ public class Shooter{
         shootingTrajectory.setXDistance(distance);
         double velocity = shootingTrajectory.initialVelocity();
         SmartDashboard.putNumber("Init Velocity goal", velocity);
-    
+        /*
         this.velocityOfShooter = velocity;
         this.shooter.set(ControlMode.Velocity, velocity);
+        */
+        this.shooter.set(ControlMode.PercentOutput, 1);
     }
 
     public void runConveyor() {
-        
+        /*
         if (getVelocity()[0] > minShooterValue
             && getVelocity()[0] < maxShooterValue) {
             this.conveyor.set(.65);
         }else{
             this.conveyor.set(0);
         }
+        */
+        this.conveyor.set(.65);
     }
 
 

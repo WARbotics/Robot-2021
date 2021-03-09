@@ -1,0 +1,9 @@
+{
+  "lengthUnit": "Meter",
+  "exportUnit": "Always Meters",
+  "maxVelocity": 2.76,
+  "maxAcceleration": 0.23,
+  "wheelBase": 0.5842,
+  "gameName": "Barrel Racing Path",
+  "outputDir": "../6925-Robot/src/main/deploy/paths"
+}
