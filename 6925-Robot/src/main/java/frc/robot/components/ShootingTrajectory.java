@@ -7,7 +7,6 @@ public class ShootingTrajectory {
 
     private double yDistance;
     private double xDistance;
-    private double distance;
     private double robotHeight = 1.0; //needs to change to measured height
     private double shootingAngleDegrees = 45; //needs to change to measured shooting angle in degrees
     private double gravity = 9.82;

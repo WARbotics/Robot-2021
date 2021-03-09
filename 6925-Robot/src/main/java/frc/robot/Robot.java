@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.common.AutoCommand;
 import frc.robot.common.TrajectoryImporter;
-import frc.robot.components.DriveConstants;
 import frc.robot.components.Drivetrain;
 import frc.robot.components.OI;
 import frc.robot.components.Shooter;
@@ -28,7 +27,6 @@ import edu.wpi.first.wpilibj.Spark;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.networktables.*;
 import frc.robot.components.Intake;
 import frc.robot.common.LED;
 import frc.robot.common.LED.LEDMode;
@@ -54,7 +52,6 @@ public class Robot extends TimedRobot {
   private AutoCommand barrelAuto;
   private AutoCommand bounceAuto;
   private AutoCommand turnTestAuto;
-  private ShootingTrajectory trajectory;
   private LED led;
   /**
    * This function is run when the robot is first started up and should be
